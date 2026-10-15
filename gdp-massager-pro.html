@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<!--
+SPDX-License-Identifier: CPAL-1.0
+The contents of this file are subject to the Common Public Attribution License
+Version 1.0 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy in LICENSE or at
+https://opensource.org/license/CPAL-1.0. The License is based on Mozilla Public
+License 1.1, with attribution and network-use terms in Sections 14 and 15.
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND. See the License for rights and limitations.
+The Original Code is gdp-massager-pro.html. The Original Developer and Initial Developer
+are Sylvaris / Aditya Kshirsagar. Copyright 2026 Sylvaris. All Rights Reserved.
+Exhibit B: "A Sylvaris initiative" and https://getsylvaris.com/explore.
+Display of this attribution is required in Larger Works. No alternative
+license is offered. See LICENSE and SOURCE_NOTICE.md for the full terms.
+-->
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GDP Massager Pro | Sylvaris</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --card-inner: #0f172a;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+            --accent-amber: #f59e0b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 12px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-bottom: 24px;
+        }
+
+        .gallery-link {
+            display: inline-flex;
+            align-items: center;
+            min-height: 44px;
+            width: fit-content;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .gallery-link:hover { color: var(--text-main); text-decoration: underline; }
+        .gallery-link:focus-visible { outline: 3px solid var(--accent-green); outline-offset: 3px; }
+        .simulation-note { color: var(--text-muted); font-size: 0.8rem; line-height: 1.4; }
+
+        header {
+            background: var(--card-bg);
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        header h1 span {
+            color: var(--accent-green);
+        }
+
+        .quarter-badge {
+            background: var(--accent-blue);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        /* How to Play Rules Box */
+        .rules-card {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--accent-blue);
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+
+        .rules-card h2 {
+            font-size: 0.85rem;
+            color: var(--accent-blue);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rules-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            color: #cbd5e1;
+        }
+
+        .rules-list li span {
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* Hero Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .metric-card.hero {
+            grid-column: span 2;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid var(--accent-green);
+            text-align: center;
+            padding: 16px;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+
+        .metric-card.hero .metric-value {
+            font-size: 2.2rem;
+            color: var(--accent-green);
+        }
+
+        .sub-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Chart Canvas Area */
+        .chart-card {
+            background: var(--card-bg);
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .chart-title {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .legend {
+            display: flex;
+            gap: 12px;
+            font-size: 0.7rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        canvas {
+            width: 100%;
+            height: 110px;
+            background: var(--card-inner);
+            border-radius: 6px;
+        }
+
+        /* Sliders Controls Card */
+        .controls-card {
+            background: var(--card-bg);
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .slider-group {
+            background: var(--card-inner);
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .slider-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .slider-boost {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--accent-green);
+        }
+
+        .slider-desc {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            line-height: 1.3;
+        }
+
+        /* Custom Range Slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+            margin: 4px 0;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        }
+
+        /* Action Button */
+        .publish-btn {
+            background: linear-gradient(135deg, var(--accent-green) 0%, #059669 100%);
+            color: #000;
+            font-weight: 800;
+            font-size: 1rem;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+            transition: transform 0.1s, opacity 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .publish-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--accent-amber);
+        }
+
+        .modal-body {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: var(--text-main);
+        }
+
+        .option-btn {
+            background: var(--card-inner);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            text-align: left;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .option-btn:hover {
+            border-color: var(--accent-blue);
+        }
+    </style>
+<style>
+.sylvaris-attribution{width:100%;margin:0 0 12px;padding:9px 12px;border:1px solid rgba(255,255,255,.35);border-radius:4px;background:#082c2c;color:#fff;text-align:center;font:600 14px/1.4 system-ui,-apple-system,sans-serif}
+.sylvaris-attribution a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.sylvaris-attribution a:focus-visible{outline:2px solid #fff;outline-offset:3px}
+</style></head>
+<body>
+
+<div class="app-container"><p class="sylvaris-attribution"><a href="https://getsylvaris.com/explore" target="_blank" rel="noopener noreferrer">A Sylvaris initiative</a></p>
+    <a class="gallery-link" href="/explore">← All games</a>
+    <header>
+        <h1>GDP Massager <span>PRO</span></h1>
+        <div class="quarter-badge" id="quarter-display">Quarter 1 / Year 1</div>
+    </header>
+    <p class="simulation-note">Fictional educational simulation. The numbers are not an economic forecast.</p>
+
+    <!-- Game Rules Explanation -->
+    <div class="rules-card">
+        <h2>📖 How to Play</h2>
+        <ul class="rules-list">
+            <li>🎯 <span>The Goal:</span> Keep <b>Official GDP growth above 8.0%</b> for 8 Quarters (2 Years).</li>
+            <li>📊 <span>The Problem:</span> Real economic growth is low (only ~2%). You must "massage" (boost) the report!</li>
+            <li>🎚️ <span>The Sliders:</span> Slide right to add statistical tricks to the GDP total.</li>
+            <li>⚠️ <span>The Risk:</span> Pushing sliders too high drains <b>Expert Trust</b> and raises <b>Public Anger</b>!</li>
+        </ul>
+    </div>
+
+    <!-- Main Scoreboard -->
+    <div class="metrics-grid">
+        <div class="metric-card hero">
+            <div class="metric-label">Official Reported GDP Growth</div>
+            <div class="metric-value" id="official-gdp-val">8.2%</div>
+            <div class="sub-text">Target: &gt; 8.0% | Real Economy: <span id="real-gdp-val">2.0%</span></div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label">Expert Trust</div>
+            <div class="metric-value" id="trust-val" style="color: var(--accent-green);">100%</div>
+            <div class="sub-text">Don't reach 0%!</div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label">Public Anger</div>
+            <div class="metric-value" id="anger-val" style="color: var(--accent-green);">0%</div>
+            <div class="sub-text">Don't reach 100%!</div>
+        </div>
+    </div>
+
+    <!-- Growth Graph -->
+    <div class="chart-card">
+        <div class="chart-title">
+            <span>Growth Chart</span>
+            <div class="legend">
+                <div class="legend-item"><div class="dot" style="background: var(--accent-green);"></div> Official</div>
+                <div class="legend-item"><div class="dot" style="background: var(--accent-red);"></div> Real</div>
+            </div>
+        </div>
+        <canvas id="gdpChart"></canvas>
+    </div>
+
+    <!-- Sliders Section -->
+    <div class="controls-card">
+        <div class="section-title">
+            <span>Statistical Sliders</span>
+            <span style="color: var(--accent-green);" id="total-boost-tag">+6.2% Fake Boost</span>
+        </div>
+
+        <!-- Slider 1 -->
+        <div class="slider-group">
+            <div class="slider-header">
+                <label class="slider-title" for="slider1">1. Bad-Year Benchmark</label>
+                <span class="slider-boost" id="boost-s1">+2.0%</span>
+            </div>
+            <div class="slider-desc">Compare today's economy to a terrible year in the past so current growth looks huge.</div>
+            <input type="range" id="slider1" min="0" max="100" value="60" oninput="updateCalculations()">
+        </div>
+
+        <!-- Slider 2 -->
+        <div class="slider-group">
+            <div class="slider-header">
+                <label class="slider-title" for="slider2">2. Price Inflation Hide</label>
+                <span class="slider-boost" id="boost-s2">+2.0%</span>
+            </div>
+            <div class="slider-desc">Pretend prices aren't going up. Lower official inflation makes GDP look higher! (Makes public angry)</div>
+            <input type="range" id="slider2" min="0" max="100" value="50" oninput="updateCalculations()">
+        </div>
+
+        <!-- Slider 3 -->
+        <div class="slider-group">
+            <div class="slider-header">
+                <label class="slider-title" for="slider3">3. Guess Uncounted Cash</label>
+                <span class="slider-boost" id="boost-s3">+1.2%</span>
+            </div>
+            <div class="slider-desc">Add big optimistic guesses for cash sales and street markets that aren't officially tracked.</div>
+            <input type="range" id="slider3" min="0" max="100" value="40" oninput="updateCalculations()">
+        </div>
+
+        <!-- Slider 4 -->
+        <div class="slider-group">
+            <div class="slider-header">
+                <label class="slider-title" for="slider4">4. Call Spending "Assets"</label>
+                <span class="slider-boost" id="boost-s4">+1.0%</span>
+            </div>
+            <div class="slider-desc">Reclassify routine government repairs and military gear as long-term wealth assets.</div>
+            <input type="range" id="slider4" min="0" max="100" value="50" oninput="updateCalculations()">
+        </div>
+    </div>
+
+    <button class="publish-btn" id="publish-btn" onclick="publishQuarter()">Publish Quarter 1 Report 🚀</button>
+</div>
+
+<!-- Event / End Game Modal -->
+<div class="modal-overlay" id="event-modal">
+    <div class="modal-content">
+        <div class="modal-title" id="modal-title">Economic News Flash</div>
+        <div class="modal-body" id="modal-body">Description...</div>
+        <div id="modal-options" style="display:flex; flex-direction:column; gap:8px;"></div>
+    </div>
+</div>
+
+<script>
+    // Game State
+    let state = {
+        quarter: 1,
+        realGDP: 2.0,
+        officialGDP: 8.2,
+        trust: 100,
+        anger: 0,
+        history: [{ q: 0, official: 8.2, real: 2.0 }]
+    };
+
+    // Slider Weights (Max boost each slider can add)
+    const weights = {
+        slider1: 3.3, // Bad-Year Benchmark
+        slider2: 4.0, // Price Inflation Hide
+        slider3: 3.0, // Guess Uncounted Cash
+        slider4: 2.0  // Call Spending Assets
+    };
+
+    const events = [
+        {
+            title: "📡 The Night-Light Satellite Study",
+            body: "A university uses satellite photos at night and notices dark industrial zones, contradicting your reported factory growth!",
+            options: [
+                { text: "Claim factories switched to eco-friendly LED lights. (-15% Expert Trust)", action: () => { state.trust -= 15; } },
+                { text: "Admit a calculation mistake and lower next report. (-1.5% Real GDP)", action: () => { state.realGDP = Math.max(0.5, state.realGDP - 1.5); } }
+            ]
+        },
+        {
+            title: "🧅 The Great Vegetable Price Shock",
+            body: "Bad weather makes vegetable prices double across supermarkets and local stores.",
+            options: [
+                { text: "Remove vegetables from the official price tracker! (+20% Public Anger)", action: () => { state.anger += 20; } },
+                { text: "Report true food inflation in the official numbers. (-2.0% Official GDP)", action: () => { state.realGDP = Math.max(0.5, state.realGDP - 1.0); } }
+            ]
+        }
+    ];
+
+    function init() {
+        updateCalculations();
+        drawChart();
+    }
+
+    function updateCalculations() {
+        const v1 = document.getElementById('slider1').value / 100;
+        const v2 = document.getElementById('slider2').value / 100;
+        const v3 = document.getElementById('slider3').value / 100;
+        const v4 = document.getElementById('slider4').value / 100;
+
+        const b1 = v1 * weights.slider1;
+        const b2 = v2 * weights.slider2;
+        const b3 = v3 * weights.slider3;
+        const b4 = v4 * weights.slider4;
+
+        document.getElementById('boost-s1').innerText = '+' + b1.toFixed(1) + '%';
+        document.getElementById('boost-s2').innerText = '+' + b2.toFixed(1) + '%';
+        document.getElementById('boost-s3').innerText = '+' + b3.toFixed(1) + '%';
+        document.getElementById('boost-s4').innerText = '+' + b4.toFixed(1) + '%';
+
+        const totalBoost = b1 + b2 + b3 + b4;
+        document.getElementById('total-boost-tag').innerText = '+' + totalBoost.toFixed(1) + '% Fake Boost';
+
+        state.officialGDP = parseFloat((state.realGDP + totalBoost).toFixed(1));
+        
+        document.getElementById('official-gdp-val').innerText = state.officialGDP + '%';
+        document.getElementById('real-gdp-val').innerText = state.realGDP.toFixed(1) + '%';
+    }
+
+    function updateUI() {
+        document.getElementById('quarter-display').innerText = `Quarter ${state.quarter} / Year ${Math.ceil(state.quarter / 4)}`;
+        
+        // Update Trust
+        const trustEl = document.getElementById('trust-val');
+        trustEl.innerText = Math.max(0, state.trust) + '%';
+        trustEl.style.color = state.trust < 35 ? 'var(--accent-red)' : 'var(--accent-green)';
+
+        // Update Anger
+        const angerEl = document.getElementById('anger-val');
+        angerEl.innerText = Math.min(100, state.anger) + '%';
+        angerEl.style.color = state.anger > 65 ? 'var(--accent-red)' : 'var(--accent-green)';
+
+        document.getElementById('publish-btn').innerText = `Publish Quarter ${state.quarter} Report 🚀`;
+    }
+
+    function publishQuarter() {
+        // Calculate penalty based on slider positions
+        const v1 = document.getElementById('slider1').value / 100;
+        const v2 = document.getElementById('slider2').value / 100;
+        const v3 = document.getElementById('slider3').value / 100;
+        const v4 = document.getElementById('slider4').value / 100;
+
+        // Trust loss increases with higher total tricks
+        const avgSlider = (v1 + v2 + v3 + v4) / 4;
+        const trustDrain = Math.round(avgSlider * 18);
+        
+        // Public anger increases especially if lying about inflation (v2) or creative accounting (v4)
+        const angerGain = Math.round((v2 * 14) + (v4 * 8));
+
+        state.trust = Math.max(0, state.trust - trustDrain);
+        state.anger = Math.min(100, state.anger + angerGain);
+
+        // Small natural fluctuation in real economy
+        state.realGDP = parseFloat((Math.max(0.8, state.realGDP + (Math.random() * 0.4 - 0.2))).toFixed(1));
+
+        updateCalculations();
+
+        // Save history
+        state.history.push({ q: state.quarter, official: state.officialGDP, real: state.realGDP });
+        drawChart();
+
+        // Check Fail Conditions
+        if (state.officialGDP < 8.0) {
+            showGameOver("MISSED GDP TARGET!", `Your Official GDP was ${state.officialGDP}%, which is below the 8.0% goal. The government replaced you!`);
+            return;
+        }
+        if (state.trust <= 0) {
+            showGameOver("EXPERT TRUST COLLAPSED!", "International economists and investors realized the numbers were completely fake. Nobody will invest in the country now!");
+            return;
+        }
+        if (state.anger >= 100) {
+            showGameOver("PUBLIC PROTESTS BREAK OUT!", "Citizens got tired of fake inflation reports while real prices kept rising. Massive protests have shut down the capital!");
+            return;
+        }
+
+        // Check Win Condition (8 Quarters = 2 Years)
+        if (state.quarter >= 8) {
+            showGameOver("MISSION ACCOMPLISHED! 🎉", `You successfully completed 2 full years maintaining an average Official GDP of ${(state.history.reduce((a,b)=>a+b.official,0)/state.history.length).toFixed(1)}%! You mastered national accounting!`);
+            return;
+        }
+
+        // Trigger Event on Quarter 3 and Quarter 6
+        if ((state.quarter === 3 || state.quarter === 6) && events.length > 0) {
+            const eventIndex = state.quarter === 3 ? 0 : 1;
+            triggerEvent(events[eventIndex]);
+        } else {
+            advanceQuarter();
+        }
+    }
+
+    function advanceQuarter() {
+        state.quarter++;
+        updateUI();
+    }
+
+    function triggerEvent(eventData) {
+        document.getElementById('modal-title').innerText = eventData.title;
+        document.getElementById('modal-body').innerText = eventData.body;
+        
+        const optionsContainer = document.getElementById('modal-options');
+        optionsContainer.innerHTML = '';
+
+        eventData.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt.text;
+            btn.onclick = () => {
+                opt.action();
+                closeModal();
+                advanceQuarter();
+            };
+            optionsContainer.appendChild(btn);
+        });
+
+        document.getElementById('event-modal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('event-modal').classList.remove('active');
+    }
+
+    function showGameOver(title, body) {
+        document.getElementById('modal-title').innerText = title;
+        document.getElementById('modal-body').innerText = body;
+        
+        const optionsContainer = document.getElementById('modal-options');
+        optionsContainer.innerHTML = '';
+        
+        const btn = document.createElement('button');
+        btn.className = 'publish-btn';
+        btn.innerText = 'Play Again 🔄';
+        btn.onclick = () => window.location.reload();
+        optionsContainer.appendChild(btn);
+
+        document.getElementById('event-modal').classList.add('active');
+    }
+
+    function drawChart() {
+        const canvas = document.getElementById('gdpChart');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const padding = 16;
+        const width = canvas.width - padding * 2;
+        const height = canvas.height - padding * 2;
+        const maxVal = 14;
+
+        // Draw Official Growth Line
+        drawLine(ctx, state.history.map(h => h.official), '#10b981', padding, width, height, maxVal);
+        // Draw Real Growth Line
+        drawLine(ctx, state.history.map(h => h.real), '#ef4444', padding, width, height, maxVal);
+    }
+
+    function drawLine(ctx, data, color, padding, width, height, maxVal) {
+        if (data.length < 1) return;
+
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 3;
+
+        const step = width / Math.max(7, data.length - 1);
+
+        data.forEach((val, i) => {
+            const x = padding + i * step;
+            const y = padding + height - (val / maxVal) * height;
+
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        });
+
+        ctx.stroke();
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>

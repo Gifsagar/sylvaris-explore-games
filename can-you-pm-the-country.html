@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<!--
+SPDX-License-Identifier: CPAL-1.0
+The contents of this file are subject to the Common Public Attribution License
+Version 1.0 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy in LICENSE or at
+https://opensource.org/license/CPAL-1.0. The License is based on Mozilla Public
+License 1.1, with attribution and network-use terms in Sections 14 and 15.
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND. See the License for rights and limitations.
+The Original Code is can-you-pm-the-country.html. The Original Developer and Initial Developer
+are Sylvaris / Aditya Kshirsagar. Copyright 2026 Sylvaris. All Rights Reserved.
+Exhibit B: "A Sylvaris initiative" and https://getsylvaris.com/explore.
+Display of this attribution is required in Larger Works. No alternative
+license is offered. See LICENSE and SOURCE_NOTICE.md for the full terms.
+-->
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can you PM the country? | Sylvaris</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --card-inner: #0f172a;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+            --accent-amber: #f59e0b;
+            --accent-purple: #8b5cf6;
+            --accent-teal: #14b8a6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 12px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-bottom: 24px;
+        }
+
+        .gallery-link { display: inline-flex; align-items: center; min-height: 44px; width: fit-content; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
+        .gallery-link:hover { color: var(--text-main); text-decoration: underline; }
+        .gallery-link:focus-visible { outline: 3px solid var(--accent-teal); outline-offset: 3px; }
+        .simulation-note { color: var(--text-muted); font-size: 0.8rem; line-height: 1.4; }
+
+        header {
+            background: var(--card-bg);
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        header h1 span {
+            color: var(--accent-teal);
+        }
+
+        @media (max-width: 390px) {
+            header { align-items: flex-start; flex-direction: column; gap: 8px; }
+        }
+
+        .term-badge {
+            background: var(--accent-blue);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        /* Rules Box */
+        .rules-card {
+            background: rgba(20, 184, 166, 0.1);
+            border: 1px solid var(--accent-teal);
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+
+        .rules-card h2 {
+            font-size: 0.85rem;
+            color: var(--accent-teal);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rules-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            color: #cbd5e1;
+        }
+
+        .rules-list li span {
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .metric-card.hero {
+            grid-column: span 2;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid var(--accent-teal);
+            text-align: center;
+            padding: 16px;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+
+        .metric-card.hero .metric-value {
+            font-size: 2.2rem;
+            color: var(--accent-teal);
+        }
+
+        .sub-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Chart Canvas Area */
+        .chart-card {
+            background: var(--card-bg);
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .chart-title {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .legend {
+            display: flex;
+            gap: 12px;
+            font-size: 0.7rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        canvas {
+            width: 100%;
+            height: 110px;
+            background: var(--card-inner);
+            border-radius: 6px;
+        }
+
+        /* Sliders Controls Card */
+        .controls-card {
+            background: var(--card-bg);
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .slider-group {
+            background: var(--card-inner);
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .slider-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .slider-boost {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--accent-teal);
+        }
+
+        .slider-desc {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            line-height: 1.3;
+        }
+
+        /* Custom Range Slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+            margin: 4px 0;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: var(--accent-teal);
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        }
+
+        /* Action Button */
+        .publish-btn {
+            background: linear-gradient(135deg, var(--accent-teal) 0%, #0d9488 100%);
+            color: #000;
+            font-weight: 800;
+            font-size: 1rem;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(20, 184, 166, 0.3);
+            transition: transform 0.1s, opacity 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .publish-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--accent-teal);
+        }
+
+        .modal-body {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: var(--text-main);
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+            margin-top: 6px;
+        }
+
+        .report-table th, .report-table td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .report-table th {
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .option-btn {
+            background: var(--card-inner);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            text-align: left;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .option-btn:hover {
+            border-color: var(--accent-teal);
+        }
+    </style>
+<style>
+.sylvaris-attribution{width:100%;margin:0 0 12px;padding:9px 12px;border:1px solid rgba(255,255,255,.35);border-radius:4px;background:#082c2c;color:#fff;text-align:center;font:600 14px/1.4 system-ui,-apple-system,sans-serif}
+.sylvaris-attribution a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.sylvaris-attribution a:focus-visible{outline:2px solid #fff;outline-offset:3px}
+</style></head>
+<body>
+
+<div class="app-container"><p class="sylvaris-attribution"><a href="https://getsylvaris.com/explore" target="_blank" rel="noopener noreferrer">A Sylvaris initiative</a></p>
+    <a class="gallery-link" href="/explore">&larr; All games</a>
+    <header>
+        <h1>Can you <span>PM the country?</span></h1>
+        <div class="term-badge" id="term-display">Year 2014 / Term 1</div>
+    </header>
+
+    <p class="simulation-note">Fictional educational simulation. The figures are game mechanics, not real economic data or forecasts.</p>
+
+    <!-- Game Rules Box -->
+    <div class="rules-card">
+        <h2>🏛️ Economic Governance Brief</h2>
+        <ul class="rules-list">
+            <li>🎯 <span>The Premise:</span> You take office in <b>2014</b> following foundational macroeconomic reforms.</li>
+            <li>⚖️ <span>The Mission:</span> Balance <b>Citizen Upward Mobility</b> against <b>Oligarch Concentration</b> across a 15-year term (2014–2029).</li>
+            <li>🎚️ <span>The Controls:</span> Adjust tax policy, anti-monopoly laws, public health/edu, labor protections, and social safety nets.</li>
+            <li>📊 <span>The End:</span> At Year 15, receive an unvarnished <b>Macroeconomic Data Report</b> with no editorial remarks.</li>
+        </ul>
+    </div>
+
+    <!-- Scoreboard -->
+    <div class="metrics-grid">
+        <div class="metric-card hero">
+            <div class="metric-label">Citizen Upward Mobility Index</div>
+            <div class="metric-value" id="mobility-val">45.0%</div>
+            <div class="sub-text">2014 Baseline: 45.0% | Public Human Dev Score</div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label">Top 0.1% Billionaire Wealth Share</div>
+            <div class="metric-value" id="billionaire-val" style="color: var(--accent-amber);">22.0%</div>
+            <div class="sub-text">National Asset Share</div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label">K-Shape Divergence Index</div>
+            <div class="metric-value" id="k-gap-val" style="color: var(--accent-purple);">15.0 pts</div>
+            <div class="sub-text">Wealth Growth Gap</div>
+        </div>
+    </div>
+
+    <!-- 15-Year Trajectory Chart -->
+    <div class="chart-card">
+        <div class="chart-title">
+            <span>15-Year Structural Trajectory</span>
+            <div class="legend">
+                <div class="legend-item"><div class="dot" style="background: var(--accent-teal);"></div> Citizen Mobility</div>
+                <div class="legend-item"><div class="dot" style="background: var(--accent-amber);"></div> Billionaire Share</div>
+            </div>
+        </div>
+        <canvas id="macroChart"></canvas>
+    </div>
+
+    <!-- Policy Sliders Section -->
+    <div class="controls-card">
+        <div class="section-title">
+            <span>Policy Allocation Levers</span>
+            <span style="color: var(--accent-teal);" id="policy-focus-tag">Balanced Policy</span>
+        </div>
+
+        <!-- Slider 1 -->
+        <div class="slider-group">
+            <div class="slider-header">
+                <span class="slider-title">1. Corporate Tax Concessions & Capital Grants</span>
+                <span class="slider-boost" id="boost-s1">50% Capital</span>
+            </div>
+            <div class="slider-desc">Cut corporate income tax rates, grant industrial land concessions, and provide capital equipment write-offs.</div>
+            <input type="range" id="slider1" min="0" max="100" value="50" aria-label="Corporate tax concessions and capital grants" oninput="updateCalculations()">
+        </div>
+
+        <!-- Slider 2 -->
+        <div class="slider-group">
+            <div class="slider-header">
+                <span class="slider-title">2. Public Health & Primary Education Funding</span>
+                <span class="slider-boost" id="boost-s2">50% Public</span>
+            </div>
+            <div class="slider-desc">Direct budget share toward free public schools, tertiary technical institutes, and universal primary health centers.</div>
+            <input type="range" id="slider2" min="0" max="100" value="50" aria-label="Public health and primary education funding" oninput="updateCalculations()">
+        </div>
+
+        <!-- Slider 3 -->
+        <div class="slider-group">
+            <div class="slider-header">
+                <span class="slider-title">3. Anti-Monopoly & Competition Enforcement</span>
+                <span class="slider-boost" id="boost-s3">50% Regulation</span>
+            </div>
+            <div class="slider-desc">Restrict single-conglomerate bidding on critical infrastructure (ports, airports, telecom) to preserve MSME space.</div>
+            <input type="range" id="slider3" min="0" max="100" value="50" aria-label="Anti-monopoly and competition enforcement" oninput="updateCalculations()">
+        </div>
+
+        <!-- Slider 4 -->
+        <div class="slider-group">
+            <div class="slider-header">
+                <span class="slider-title">4. Labor Protections & Real Wage Floor</span>
+                <span class="slider-boost" id="boost-s4">50% Rights</span>
+            </div>
+            <div class="slider-desc">Enforce formal employment contracts, inflation-indexed minimum wages, and workplace safety standards.</div>
+            <input type="range" id="slider4" min="0" max="100" value="50" aria-label="Labor protections and real wage floor" oninput="updateCalculations()">
+        </div>
+
+        <!-- Slider 5 -->
+        <div class="slider-group">
+            <div class="slider-header">
+                <span class="slider-title">5. Universal Social Safety Net & Cash Support</span>
+                <span class="slider-boost" id="boost-s5">50% Safety Net</span>
+            </div>
+            <div class="slider-desc">Fund rural employment guarantee programs, direct nutrition transfers, and informal worker pension accounts.</div>
+            <input type="range" id="slider5" min="0" max="100" value="50" aria-label="Universal social safety net and cash support" oninput="updateCalculations()">
+        </div>
+    </div>
+
+    <button class="publish-btn" id="publish-btn" onclick="runYear()">Execute Year 2014 Budget 📊</button>
+</div>
+
+<!-- Modal Overlay -->
+<div class="modal-overlay" id="event-modal">
+    <div class="modal-content">
+        <div class="modal-title" id="modal-title">Economic Flashpoint</div>
+        <div class="modal-body" id="modal-body">Description...</div>
+        <div id="modal-options" style="display:flex; flex-direction:column; gap:8px;"></div>
+    </div>
+</div>
+
+<script>
+    // Game State
+    let state = {
+        yearIndex: 0, // 0 to 14 (Years 2014 to 2028)
+        startYear: 2014,
+        citizenMobility: 45.0,
+        billionaireShare: 22.0,
+        kShapeGap: 15.0,
+        fiscalReserve: 80.0,
+        history: [{ year: 2014, mobility: 45.0, billionaire: 22.0, kGap: 15.0 }]
+    };
+
+    const events = [
+        {
+            yearTrigger: 3, // Year 2017
+            title: "📉 Global Commodity Shock & Banking Bad Loans",
+            body: "Heavy industrial groups face debt service pressure from non-performing assets (NPAs). Conglomerates ask for a debt restructuring package.",
+            options: [
+                { text: "Bail out conglomerate debts via public bank recapitalization bonds. (+3.5% Billionaire Share, +4.0 K-Gap)", action: () => { state.billionaireShare += 3.5; } },
+                { text: "Enforce bankruptcy insolvency resolution & redirect credit to MSMEs. (+2.0% Citizen Mobility)", action: () => { state.citizenMobility += 2.0; } }
+            ]
+        },
+        {
+            yearTrigger: 7, // Year 2021
+            title: "🦠 Public Health Shock & Informal Sector Disruption",
+            body: "A widespread pandemic disrupts informal daily-wage employment while tech and logistics conglomerates record record margin expansions.",
+            options: [
+                { text: "Grant emergency tax write-offs to corporate supply chain monopolies. (+4.0% Billionaire Share)", action: () => { state.billionaireShare += 4.0; } },
+                { text: "Deploy emergency universal cash transfers & food security expansion. (+3.5% Citizen Mobility)", action: () => { state.citizenMobility += 3.5; } }
+            ]
+        },
+        {
+            yearTrigger: 11, // Year 2025
+            title: "🤖 Automation & Port/Logistics Privatization Bid",
+            body: "Conglomerates request 30-year concession leases over national port terminals and digital infrastructure.",
+            options: [
+                { text: "Approve single-bidder long-term concessions. (+4.5% Billionaire Share, +5.0 K-Gap)", action: () => { state.billionaireShare += 4.5; } },
+                { text: "Mandate open multi-operator public-private consortia with revenue share. (+2.5% Citizen Mobility)", action: () => { state.citizenMobility += 2.5; } }
+            ]
+        }
+    ];
+
+    function init() {
+        updateCalculations();
+        drawChart();
+    }
+
+    function updateCalculations() {
+        const v1 = document.getElementById('slider1').value / 100; // Corporate Tax Concessions
+        const v2 = document.getElementById('slider2').value / 100; // Public Health & Edu
+        const v3 = document.getElementById('slider3').value / 100; // Anti-Monopoly
+        const v4 = document.getElementById('slider4').value / 100; // Labor Protections
+        const v5 = document.getElementById('slider5').value / 100; // Universal Safety Net
+
+        document.getElementById('boost-s1').innerText = `${Math.round(v1 * 100)}% Capital Concessions`;
+        document.getElementById('boost-s2').innerText = `${Math.round(v2 * 100)}% Public Investment`;
+        document.getElementById('boost-s3').innerText = `${Math.round(v3 * 100)}% Competition`;
+        document.getElementById('boost-s4').innerText = `${Math.round(v4 * 100)}% Wage Floor`;
+        document.getElementById('boost-s5').innerText = `${Math.round(v5 * 100)}% Safety Net`;
+
+        // Net orientation tag
+        const proCitizenSum = v2 + v3 + v4 + v5;
+        const proCapitalSum = v1 * 3;
+
+        let tagText = "Balanced Policy";
+        if (proCapitalSum > proCitizenSum + 0.8) tagText = "Capital-Concentration Dominant";
+        else if (proCitizenSum > proCapitalSum + 0.8) tagText = "Broad-Based Citizen Growth";
+        document.getElementById('policy-focus-tag').innerText = tagText;
+
+        document.getElementById('mobility-val').innerText = state.citizenMobility.toFixed(1) + '%';
+        document.getElementById('billionaire-val').innerText = state.billionaireShare.toFixed(1) + '%';
+
+        // K-Shape Gap calculation
+        state.kShapeGap = parseFloat((Math.max(0, state.billionaireShare - (state.citizenMobility * 0.35))).toFixed(1));
+        document.getElementById('k-gap-val').innerText = state.kShapeGap.toFixed(1) + ' pts';
+    }
+
+    function updateUI() {
+        const currentYear = state.startYear + state.yearIndex;
+        document.getElementById('term-display').innerText = `Year ${currentYear} / Term ${Math.floor(state.yearIndex / 5) + 1}`;
+        document.getElementById('publish-btn').innerText = `Execute Year ${currentYear} Budget 📊`;
+    }
+
+    function runYear() {
+        const v1 = document.getElementById('slider1').value / 100;
+        const v2 = document.getElementById('slider2').value / 100;
+        const v3 = document.getElementById('slider3').value / 100;
+        const v4 = document.getElementById('slider4').value / 100;
+        const v5 = document.getElementById('slider5').value / 100;
+
+        // Yearly deltas
+        // Capital concessions boost Billionaire share
+        const billionaireDelta = (v1 * 1.8) - (v3 * 0.9) - (v4 * 0.4);
+
+        // Public investment, anti-monopoly, labor rights, and safety nets boost Citizen Mobility
+        const mobilityDelta = (v2 * 1.2) + (v3 * 0.6) + (v4 * 0.8) + (v5 * 1.0) - (v1 * 0.6);
+
+        state.billionaireShare = parseFloat((Math.max(10.0, state.billionaireShare + billionaireDelta)).toFixed(1));
+        state.citizenMobility = parseFloat((Math.max(15.0, state.citizenMobility + mobilityDelta)).toFixed(1));
+
+        updateCalculations();
+
+        const currentYear = state.startYear + state.yearIndex + 1;
+
+        // Save history
+        state.history.push({
+            year: currentYear,
+            mobility: state.citizenMobility,
+            billionaire: state.billionaireShare,
+            kGap: state.kShapeGap
+        });
+
+        drawChart();
+
+        // Check for event triggers
+        const activeEvent = events.find(e => e.yearTrigger === state.yearIndex + 1);
+
+        if (activeEvent) {
+            triggerEvent(activeEvent);
+        } else {
+            advanceYear();
+        }
+    }
+
+    function advanceYear() {
+        state.yearIndex++;
+
+        if (state.yearIndex >= 15) {
+            showFinalReport();
+            return;
+        }
+
+        updateUI();
+    }
+
+    function triggerEvent(eventData) {
+        document.getElementById('modal-title').innerText = eventData.title;
+        document.getElementById('modal-body').innerText = eventData.body;
+
+        const optionsContainer = document.getElementById('modal-options');
+        optionsContainer.innerHTML = '';
+
+        eventData.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt.text;
+            btn.onclick = () => {
+                opt.action();
+                updateCalculations();
+                closeModal();
+                advanceYear();
+            };
+            optionsContainer.appendChild(btn);
+        });
+
+        document.getElementById('event-modal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('event-modal').classList.remove('active');
+    }
+
+    function showFinalReport() {
+        document.getElementById('modal-title').innerText = "15-YEAR MACROECONOMIC DATA REPORT (2014–2029)";
+
+        const b2014 = state.history[0];
+        const f2029 = state.history[state.history.length - 1];
+
+        const mobilityChange = (f2029.mobility - b2014.mobility).toFixed(1);
+        const billionaireChange = (f2029.billionaire - b2014.billionaire).toFixed(1);
+        const kGapChange = (f2029.kGap - b2014.kGap).toFixed(1);
+
+        // Pure unvarnished data report table with no editorial remarks
+        const reportHTML = `
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:8px;">
+                Official Statistical Audit of 15-Year Structural Trajectory.
+            </div>
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>Metric Variable</th>
+                        <th>2014 Base</th>
+                        <th>2029 Final</th>
+                        <th>Net Delta</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>Citizen Mobility Index</b></td>
+                        <td>${b2014.mobility.toFixed(1)}%</td>
+                        <td><b>${f2029.mobility.toFixed(1)}%</b></td>
+                        <td style="color:${mobilityChange >= 0 ? 'var(--accent-teal)' : 'var(--accent-red)'}">${mobilityChange >= 0 ? '+' : ''}${mobilityChange}%</td>
+                    </tr>
+                    <tr>
+                        <td><b>Top 0.1% Wealth Share</b></td>
+                        <td>${b2014.billionaire.toFixed(1)}%</td>
+                        <td><b>${f2029.billionaire.toFixed(1)}%</b></td>
+                        <td style="color:${billionaireChange <= 0 ? 'var(--accent-teal)' : 'var(--accent-amber)'}">${billionaireChange >= 0 ? '+' : ''}${billionaireChange}%</td>
+                    </tr>
+                    <tr>
+                        <td><b>K-Shape Divergence Score</b></td>
+                        <td>${b2014.kGap.toFixed(1)} pts</td>
+                        <td><b>${f2029.kGap.toFixed(1)} pts</b></td>
+                        <td style="color:${kGapChange <= 0 ? 'var(--accent-teal)' : 'var(--accent-purple)'}">${kGapChange >= 0 ? '+' : ''}${kGapChange} pts</td>
+                    </tr>
+                    <tr>
+                        <td><b>Bottom 50% Wealth Share</b></td>
+                        <td>6.4%</td>
+                        <td><b>${(Math.max(1.0, 6.4 + (f2029.mobility - 45) * 0.25 - (f2029.billionaire - 22) * 0.3)).toFixed(1)}%</b></td>
+                        <td>--</td>
+                    </tr>
+                    <tr>
+                        <td><b>Poverty Headcount Rate</b></td>
+                        <td>21.9%</td>
+                        <td><b>${(Math.max(2.0, 21.9 - (f2029.mobility - 45) * 0.4)).toFixed(1)}%</b></td>
+                        <td>--</td>
+                    </tr>
+                    <tr>
+                        <td><b>Middle-Class Share</b></td>
+                        <td>31.0%</td>
+                        <td><b>${(Math.max(15.0, 31.0 + (f2029.mobility - 45) * 0.5)).toFixed(1)}%</b></td>
+                        <td>--</td>
+                    </tr>
+                </tbody>
+            </table>
+        `;
+
+        document.getElementById('modal-body').innerHTML = reportHTML;
+
+        const optionsContainer = document.getElementById('modal-options');
+        optionsContainer.innerHTML = '';
+
+        const btn = document.createElement('button');
+        btn.className = 'publish-btn';
+        btn.innerText = 'Run New 15-Year Simulation 🔄';
+        btn.onclick = () => window.location.reload();
+        optionsContainer.appendChild(btn);
+
+        document.getElementById('event-modal').classList.add('active');
+    }
+
+    function drawChart() {
+        const canvas = document.getElementById('macroChart');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const padding = 16;
+        const width = canvas.width - padding * 2;
+        const height = canvas.height - padding * 2;
+        const maxVal = 100;
+
+        // Draw Citizen Mobility Line (Teal)
+        drawLine(ctx, state.history.map(h => h.mobility), '#14b8a6', padding, width, height, maxVal);
+        // Draw Billionaire Wealth Share Line (Amber)
+        drawLine(ctx, state.history.map(h => h.billionaire), '#f59e0b', padding, width, height, maxVal);
+    }
+
+    function drawLine(ctx, data, color, padding, width, height, maxVal) {
+        if (data.length < 1) return;
+
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 3;
+
+        const step = width / Math.max(14, data.length - 1);
+
+        data.forEach((val, i) => {
+            const x = padding + i * step;
+            const y = padding + height - (val / maxVal) * height;
+
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        });
+
+        ctx.stroke();
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>

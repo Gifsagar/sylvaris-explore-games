@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<!--
+SPDX-License-Identifier: CPAL-1.0
+The contents of this file are subject to the Common Public Attribution License
+Version 1.0 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy in LICENSE or at
+https://opensource.org/license/CPAL-1.0. The License is based on Mozilla Public
+License 1.1, with attribution and network-use terms in Sections 14 and 15.
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND. See the License for rights and limitations.
+The Original Code is what-will-jnanu-do.html. The Original Developer and Initial Developer
+are Sylvaris / Aditya Kshirsagar. Copyright 2026 Sylvaris. All Rights Reserved.
+Exhibit B: "A Sylvaris initiative" and https://getsylvaris.com/explore.
+Display of this attribution is required in Larger Works. No alternative
+license is offered. See LICENSE and SOURCE_NOTICE.md for the full terms.
+-->
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Would Jnanu Do? | Sylvaris</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --card-inner: #0f172a;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+            --accent-amber: #f59e0b;
+            --accent-purple: #8b5cf6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 12px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding-bottom: 24px;
+        }
+
+        .gallery-link { display: inline-flex; align-items: center; min-height: 44px; width: fit-content; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; }
+        .gallery-link:hover { color: var(--text-main); text-decoration: underline; }
+        .gallery-link:focus-visible { outline: 3px solid var(--accent-amber); outline-offset: 3px; }
+        .simulation-note { color: var(--text-muted); font-size: 0.8rem; line-height: 1.4; }
+
+        header {
+            background: var(--card-bg);
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        header h1 span {
+            color: var(--accent-amber);
+        }
+
+        .term-badge {
+            background: var(--accent-blue);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        /* Rules Box */
+        .rules-card {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid var(--accent-amber);
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+
+        .rules-card h2 {
+            font-size: 0.85rem;
+            color: var(--accent-amber);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rules-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            color: #cbd5e1;
+        }
+
+        .rules-list li span {
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .metric-card.hero {
+            grid-column: span 2;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid var(--accent-amber);
+            text-align: center;
+            padding: 16px;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .metric-value {
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+
+        .metric-card.hero .metric-value {
+            font-size: 2.2rem;
+            color: var(--accent-amber);
+        }
+
+        .sub-text {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Chart Canvas Area */
+        .chart-card {
+            background: var(--card-bg);
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .chart-title {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .legend {
+            display: flex;
+            gap: 12px;
+            font-size: 0.7rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        canvas {
+            width: 100%;
+            height: 110px;
+            background: var(--card-inner);
+            border-radius: 6px;
+        }
+
+        /* Sliders Controls Card */
+        .controls-card {
+            background: var(--card-bg);
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .slider-group {
+            background: var(--card-inner);
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .slider-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .slider-boost {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: var(--accent-amber);
+        }
+
+        .slider-desc {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            line-height: 1.3;
+        }
+
+        /* Custom Range Slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+            margin: 4px 0;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: #334155;
+            border-radius: 4px;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: var(--accent-amber);
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        }
+
+        /* Action Button */
+        .publish-btn {
+            background: linear-gradient(135deg, var(--accent-amber) 0%, #d97706 100%);
+            color: #000;
+            font-weight: 800;
+            font-size: 1rem;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+            transition: transform 0.1s, opacity 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .publish-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--accent-amber);
+        }
+
+        .modal-body {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: var(--text-main);
+        }
+
+        .option-btn {
+            background: var(--card-inner);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            text-align: left;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .option-btn:hover {
+            border-color: var(--accent-amber);
+        }
+
+        @media (max-width: 390px) {
+            header { flex-wrap: wrap; gap: 8px; }
+            header h1 { width: 100%; }
+        }
+    </style>
+<style>
+.sylvaris-attribution{width:100%;margin:0 0 12px;padding:9px 12px;border:1px solid rgba(255,255,255,.35);border-radius:4px;background:#082c2c;color:#fff;text-align:center;font:600 14px/1.4 system-ui,-apple-system,sans-serif}
+.sylvaris-attribution a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.sylvaris-attribution a:focus-visible{outline:2px solid #fff;outline-offset:3px}
+</style></head>
+<body>
+
+<div class="app-container"><p class="sylvaris-attribution"><a href="https://getsylvaris.com/explore" target="_blank" rel="noopener noreferrer">A Sylvaris initiative</a></p>
+    <a class="gallery-link" href="/explore">← All games</a>
+    <header>
+        <h1>What Would <span>Jnanu Do?</span></h1>
+        <div class="term-badge" id="term-display">Year 4 / Election 1</div>
+    </header>
+    <p class="simulation-note">Fictional educational simulation. Vote shares and outcomes are not real election data.</p>
+
+    <!-- Game Rules Box -->
+    <div class="rules-card">
+        <h2>🏛️ How to Play</h2>
+        <ul class="rules-list">
+            <li>🎯 <span>The Goal:</span> Stay in power for <b>20 Years</b> (Win 5 consecutive elections).</li>
+            <li>📉 <span>The Problem:</span> Real public support declines naturally due to fatigue and economic shocks.</li>
+            <li>🎚️ <span>The Sliders:</span> Use electoral engineering & legal hurdles to inflate official vote tallies.</li>
+            <li>⚠️ <span>The Risk:</span> Excessive manipulation triggers <b>Public Rage</b> and <b>Global Sanctions</b>!</li>
+        </ul>
+    </div>
+
+    <!-- Scoreboard -->
+    <div class="metrics-grid">
+        <div class="metric-card hero">
+            <div class="metric-label">Official Election Result</div>
+            <div class="metric-value" id="official-vote-val">68.0%</div>
+            <div class="sub-text">Win Requirement: &gt; 50.0% | Real Support: <span id="real-support-val">38.0%</span></div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label">Public Rage</div>
+            <div class="metric-value" id="rage-val" style="color: var(--accent-green);">15%</div>
+            <div class="sub-text">Protest Risk: 100%</div>
+        </div>
+
+        <div class="metric-card">
+            <div class="metric-label">Global Sanctions</div>
+            <div class="metric-value" id="sanctions-val" style="color: var(--accent-green);">10%</div>
+            <div class="sub-text">Isolation Risk: 100%</div>
+        </div>
+    </div>
+
+    <!-- Election History Chart -->
+    <div class="chart-card">
+        <div class="chart-title">
+            <span>20-Year Vote Trajectory</span>
+            <div class="legend">
+                <div class="legend-item"><div class="dot" style="background: var(--accent-amber);"></div> Reported Vote</div>
+                <div class="legend-item"><div class="dot" style="background: var(--accent-red);"></div> Real Support</div>
+            </div>
+        </div>
+        <canvas id="voteChart"></canvas>
+    </div>
+
+    <!-- Sliders Section -->
+    <div class="controls-card">
+        <div class="section-title">
+            <span>Electoral Levers</span>
+            <span style="color: var(--accent-amber);" id="total-boost-tag">+30.0% Vote Padding</span>
+        </div>
+
+        <!-- Slider 1 -->
+        <div class="slider-group">
+            <div class="slider-header">
+                <label class="slider-title" for="slider1">1. Candidate Filtering & Technical Bans</label>
+                <span class="slider-boost" id="boost-s1">+10.0%</span>
+            </div>
+            <div class="slider-desc">Disqualify viable opposition leaders using signature nits, tax checks, or legal cases.</div>
+            <input type="range" id="slider1" min="0" max="100" value="50" oninput="updateCalculations()">
+        </div>
+
+        <!-- Slider 2 -->
+        <div class="slider-group">
+            <div class="slider-header">
+                <label class="slider-title" for="slider2">2. State Worker Mobilization</label>
+                <span class="slider-boost" id="boost-s2">+8.0%</span>
+            </div>
+            <div class="slider-desc">Instruct public sector managers, universities, and military bases to verify turnout for the governing party.</div>
+            <input type="range" id="slider2" min="0" max="100" value="50" oninput="updateCalculations()">
+        </div>
+
+        <!-- Slider 3 -->
+        <div class="slider-group">
+            <div class="slider-header">
+                <label class="slider-title" for="slider3">3. High Thresholds & Gerrymandering</label>
+                <span class="slider-boost" id="boost-s3">+7.0%</span>
+            </div>
+            <div class="slider-desc">Raise seat thresholds and redraw voting districts to turn fragmented opposition votes into supermajority seats.</div>
+            <input type="range" id="slider3" min="0" max="100" value="50" oninput="updateCalculations()">
+        </div>
+
+        <!-- Slider 4 -->
+        <div class="slider-group">
+            <div class="slider-header">
+                <label class="slider-title" for="slider4">4. Electronic Voting & Box Padding</label>
+                <span class="slider-boost" id="boost-s4">+5.0%</span>
+            </div>
+            <div class="slider-desc">Utilize centralized digital voting servers and remote polling stations to pad final tallies.</div>
+            <input type="range" id="slider4" min="0" max="100" value="40" oninput="updateCalculations()">
+        </div>
+    </div>
+
+    <button class="publish-btn" id="publish-btn" onclick="runElection()">Hold Year 4 Election 🗳️</button>
+</div>
+
+<!-- Modal Overlay -->
+<div class="modal-overlay" id="event-modal">
+    <div class="modal-content">
+        <div class="modal-title" id="modal-title">Electoral Flashpoint</div>
+        <div class="modal-body" id="modal-body">Description...</div>
+        <div id="modal-options" style="display:flex; flex-direction:column; gap:8px;"></div>
+    </div>
+</div>
+
+<script>
+    // Game State
+    let state = {
+        year: 4,
+        electionCycle: 1,
+        realSupport: 38.0,
+        officialVote: 68.0,
+        rage: 15,
+        sanctions: 10,
+        history: [{ year: 0, official: 68.0, real: 38.0 }]
+    };
+
+    // Slider Weights
+    const weights = {
+        slider1: 20.0, // Candidate Filtering
+        slider2: 16.0, // State Worker Mobilization
+        slider3: 14.0, // Gerrymandering / Thresholds
+        slider4: 12.0  // E-voting / Box Padding
+    };
+
+    const events = [
+        {
+            title: "🔍 Independent Election Observers Report",
+            body: "Civilian monitors present statistical evidence showing anomalous vote spikes in remote electronic voting centers.",
+            options: [
+                { text: "Label foreign observer groups as security threats. (+15% Global Sanctions)", action: () => { state.sanctions += 15; } },
+                { text: "Nullify results in 5 small districts as a token fix. (+15% Public Rage)", action: () => { state.rage += 15; } }
+            ]
+        },
+        {
+            title: "🤝 Coalition Opponent Alliance",
+            body: "Fragmented opposition parties unite behind a single charismatic candidate to bypass high entry thresholds.",
+            options: [
+                { text: "Disqualify the alliance lead candidate on technical paperwork errors. (+20% Public Rage)", action: () => { state.rage += 20; } },
+                { text: "Allow candidate, but ramp up state media coverage against them. (-3.0% Real Support)", action: () => { state.realSupport -= 3.0; } }
+            ]
+        }
+    ];
+
+    function init() {
+        updateCalculations();
+        drawChart();
+    }
+
+    function updateCalculations() {
+        const v1 = document.getElementById('slider1').value / 100;
+        const v2 = document.getElementById('slider2').value / 100;
+        const v3 = document.getElementById('slider3').value / 100;
+        const v4 = document.getElementById('slider4').value / 100;
+
+        const b1 = v1 * weights.slider1;
+        const b2 = v2 * weights.slider2;
+        const b3 = v3 * weights.slider3;
+        const b4 = v4 * weights.slider4;
+
+        document.getElementById('boost-s1').innerText = '+' + b1.toFixed(1) + '%';
+        document.getElementById('boost-s2').innerText = '+' + b2.toFixed(1) + '%';
+        document.getElementById('boost-s3').innerText = '+' + b3.toFixed(1) + '%';
+        document.getElementById('boost-s4').innerText = '+' + b4.toFixed(1) + '%';
+
+        const totalBoost = b1 + b2 + b3 + b4;
+        document.getElementById('total-boost-tag').innerText = '+' + totalBoost.toFixed(1) + '% Vote Padding';
+
+        state.officialVote = parseFloat((state.realSupport + totalBoost).toFixed(1));
+        state.officialVote = Math.min(96.0, state.officialVote);
+        
+        document.getElementById('official-vote-val').innerText = state.officialVote + '%';
+        document.getElementById('real-support-val').innerText = state.realSupport.toFixed(1) + '%';
+    }
+
+    function updateUI() {
+        document.getElementById('term-display').innerText = `Year ${state.year} / Election ${state.electionCycle}`;
+        
+        // Update Rage
+        const rageEl = document.getElementById('rage-val');
+        rageEl.innerText = Math.min(100, state.rage) + '%';
+        rageEl.style.color = state.rage > 65 ? 'var(--accent-red)' : 'var(--accent-green)';
+
+        // Update Sanctions
+        const sanctionsEl = document.getElementById('sanctions-val');
+        sanctionsEl.innerText = Math.min(100, state.sanctions) + '%';
+        sanctionsEl.style.color = state.sanctions > 65 ? 'var(--accent-red)' : 'var(--accent-green)';
+
+        document.getElementById('publish-btn').innerText = `Hold Year ${state.year} Election 🗳️`;
+    }
+
+    function runElection() {
+        const v1 = document.getElementById('slider1').value / 100;
+        const v2 = document.getElementById('slider2').value / 100;
+        const v4 = document.getElementById('slider4').value / 100;
+
+        // Heavy manipulation increases Rage and Sanctions
+        const rageGain = Math.round((v1 * 14) + (v4 * 10));
+        const sanctionsGain = Math.round((v2 * 8) + (v4 * 14));
+
+        state.rage = Math.min(100, state.rage + rageGain);
+        state.sanctions = Math.min(100, state.sanctions + sanctionsGain);
+
+        // Real public support naturally decays over time
+        state.realSupport = parseFloat((Math.max(15.0, state.realSupport - (Math.random() * 3.0 + 1.5))).toFixed(1));
+
+        updateCalculations();
+
+        // Save history
+        state.history.push({ year: state.year, official: state.officialVote, real: state.realSupport });
+        drawChart();
+
+        // Check Lose Conditions
+        if (state.officialVote < 50.0) {
+            showGameOver("ELECTION LOST!", `Official vote share dropped to ${state.officialVote}%. The governing party lost its legislative majority.`);
+            return;
+        }
+        if (state.rage >= 100) {
+            showGameOver("POPULAR REVOLUTION!", "Public rage reached 100%. Widespread post-election street demonstrations forced the regime out.");
+            return;
+        }
+        if (state.sanctions >= 100) {
+            showGameOver("ECONOMIC ISOLATION!", "Global sanctions reached 100%. Severe financial freezing rendered state institutions non-functional.");
+            return;
+        }
+
+        // Check Win Condition (20 Years)
+        if (state.year >= 20) {
+            showGameOver("20 YEARS IN POWER ACHIEVED! 🎉", `You completed a full 20-year term across 5 election cycles with an average official vote share of ${(state.history.reduce((a,b)=>a+b.official,0)/state.history.length).toFixed(1)}%!`);
+            return;
+        }
+
+        // Trigger Event on Election 2 and 4
+        if ((state.electionCycle === 2 || state.electionCycle === 4) && events.length > 0) {
+            const eventIndex = state.electionCycle === 2 ? 0 : 1;
+            triggerEvent(events[eventIndex]);
+        } else {
+            advanceTerm();
+        }
+    }
+
+    function advanceTerm() {
+        state.year += 4;
+        state.electionCycle++;
+        updateUI();
+    }
+
+    function triggerEvent(eventData) {
+        document.getElementById('modal-title').innerText = eventData.title;
+        document.getElementById('modal-body').innerText = eventData.body;
+        
+        const optionsContainer = document.getElementById('modal-options');
+        optionsContainer.innerHTML = '';
+
+        eventData.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt.text;
+            btn.onclick = () => {
+                opt.action();
+                closeModal();
+                advanceTerm();
+            };
+            optionsContainer.appendChild(btn);
+        });
+
+        document.getElementById('event-modal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('event-modal').classList.remove('active');
+    }
+
+    function showGameOver(title, body) {
+        document.getElementById('modal-title').innerText = title;
+        document.getElementById('modal-body').innerText = body;
+        
+        const optionsContainer = document.getElementById('modal-options');
+        optionsContainer.innerHTML = '';
+        
+        const btn = document.createElement('button');
+        btn.className = 'publish-btn';
+        btn.innerText = 'Play Again 🔄';
+        btn.onclick = () => window.location.reload();
+        optionsContainer.appendChild(btn);
+
+        document.getElementById('event-modal').classList.add('active');
+    }
+
+    function drawChart() {
+        const canvas = document.getElementById('voteChart');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const padding = 16;
+        const width = canvas.width - padding * 2;
+        const height = canvas.height - padding * 2;
+        const maxVal = 100;
+
+        // Draw Official Vote Line
+        drawLine(ctx, state.history.map(h => h.official), '#f59e0b', padding, width, height, maxVal);
+        // Draw Real Support Line
+        drawLine(ctx, state.history.map(h => h.real), '#ef4444', padding, width, height, maxVal);
+    }
+
+    function drawLine(ctx, data, color, padding, width, height, maxVal) {
+        if (data.length < 1) return;
+
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 3;
+
+        const step = width / Math.max(5, data.length - 1);
+
+        data.forEach((val, i) => {
+            const x = padding + i * step;
+            const y = padding + height - (val / maxVal) * height;
+
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        });
+
+        ctx.stroke();
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
